@@ -1,0 +1,16 @@
+version: "3"
+services:
+  perimeter:
+      build:
+         context: .
+         dockerfile: docker/Dockerfile
+      container_name: perimeter
+      volumes:
+         - data:/app/data
+      ports:
+         - 8001:8001
+         - 1911:1911/udp
+         - 1912:1912/udp
+
+volumes:
+  data:
