@@ -1,0 +1,38 @@
+services:
+  perimeter:
+      build:
+         context: ..
+         dockerfile: docker/Dockerfile
+      container_name: perimeter
+      volumes:
+         - data:/app/data
+      ports:
+         - 8001:8001
+         - 1911:1812/udp
+         - 1912:1813/udp
+      develop:
+        watch:
+          - action: rebuild
+            path: ../fe/
+          - action: rebuild
+            path: ../be/
+          - action: rebuild
+            path: ../docker
+      environment:
+        UNIFI_BASE: ${UNIFI_BASE}
+        UNIFI_TOKEN: ${UNIFI_TOKEN}
+        RADIUS_PASSWORD: ${RADIUS_PASSWORD}
+        PERIMETER_SECRET_KEY: ${PERIMETER_SECRET_KEY}
+  eslint:
+    build:
+       context: ..
+       dockerfile: docker/Dockerfile.eslint
+    container_name: perimeter-eslint
+  pylint:
+    build:
+       context: ..
+       dockerfile: docker/Dockerfile.pylint
+    container_name: perimeter-pylint
+
+volumes:
+  data:

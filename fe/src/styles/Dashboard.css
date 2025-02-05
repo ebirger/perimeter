@@ -1,0 +1,31 @@
+.dashboard-outer-content {
+  padding: 16px 16px;
+  overflow-x: hidden;
+}
+
+.dashboard-inner-layout {
+  padding: 24px;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.dashboard-inner-content {
+  padding: 0 16px;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* Small screen adjustments */
+@media (max-width: 768px) {
+  .dashboard-outer-content {
+    padding: 0 !important;
+  }
+
+  .dashboard-inner-layout {
+    padding: 0 !important;
+  }
+
+  .dashboard-inner-content {
+    padding: 0 !important;
+  }
+}

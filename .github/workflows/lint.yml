@@ -1,0 +1,52 @@
+name: lint
+
+on: [push, workflow_dispatch]
+
+jobs:
+  fe:
+    name: lint frontend
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [23.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: npm install
+      run: |
+        cd fe
+        npm install
+        cd ..
+    - name: ESLint
+      run: |
+        cd fe
+        ./node_modules/.bin/eslint
+        cd ..
+
+  be:
+    name: lint backend
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: pip install
+      run: |
+        cd be
+        pip install -r requirements.txt
+        pip install pylint pycodestyle
+        cd ..
+    - name: pylint
+      run: |
+        cd be
+        pylint --rcfile pylint.cfg .
+        cd ..
+    - name: pycodestyle
+      run: |
+        cd be
+        pycodestyle .
+        cd ..
