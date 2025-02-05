@@ -30,12 +30,12 @@ def update_perimeter_client(c):
 
 
 def enrich_perimeter_clients(pcs, ucs):
-    ucs = {u['mac']: u for u in ucs}
+    ucs = {mac: u for u in ucs if (mac := u.get('mac'))}
     for c in pcs:
         if not (u := ucs.get(c['mac_address'])):
             continue
-        
-        desired_name = u['name']
+        if not (desired_name := u.get('name')):
+            continue
         if c['hostname'] == desired_name:
             continue
 

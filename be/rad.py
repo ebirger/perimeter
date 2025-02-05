@@ -7,6 +7,7 @@ from pyrad import dictionary, packet, server
 
 
 DEVICES_URL = 'http://127.0.0.1:8001/api/devices/'
+SETTINGS_URL = 'http://127.0.0.1:8001/api/global_settings/1/'
 
 
 class ClientState(enum.Enum):
@@ -14,6 +15,12 @@ class ClientState(enum.Enum):
     CLIENT_PENDING = 'pending'
     CLIENT_BLOCKED = 'blocked'
     CLIENT_ALLOWED = 'allowed'
+
+
+def get_settings():
+    resp = requests.get(SETTINGS_URL)
+    resp.raise_for_status()
+    return resp.json()
 
 
 @dataclass
@@ -91,6 +98,9 @@ class RadServer(server.Server):
 
         reply = self.CreateReplyPacket(pkt)
 
+        settings = get_settings()
+        print(f'enforcement_mode: {settings["enforcement_mode"]}')
+
         c = Client.from_pkt(pkt)
         c.get_create()
         state = c.state
@@ -98,10 +108,11 @@ class RadServer(server.Server):
         sys.stdout.flush()
 
         match state:
-            case ClientState.CLIENT_UNKNOWN:
-                c.post()
-                # reply.code = packet.AccessReject
-                reply.code = packet.AccessAccept
+            case ClientState.CLIENT_UNKNOWN | ClientState.CLIENT_PENDING:
+                if settings["enforcement_mode"] == 'LOCK':
+                    reply.code = packet.AccessReject
+                else:
+                    reply.code = packet.AccessAccept
             case ClientState.CLIENT_BLOCKED:
                 reply.code = packet.AccessReject
             case ClientState.CLIENT_ALLOWED:
