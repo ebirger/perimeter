@@ -22,4 +22,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY be/ .
 COPY --from=frontend /frontend/ /app/staticfiles
 
+ENV UNIFI_TOKEN changeme
+
 CMD ["/app/entrypoint.sh"]

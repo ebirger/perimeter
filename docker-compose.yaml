@@ -11,6 +11,8 @@ services:
          - 8001:8001
          - 1911:1911/udp
          - 1912:1912/udp
+      environment:
+        UNIFI_TOKEN: ${UNIFI_TOKEN}
 
 volumes:
   data:
