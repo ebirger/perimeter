@@ -1,8 +1,7 @@
-build:
-	docker compose build
+all: build
 
-run: build
-	docker compose up
+build up:
+	docker compose -f docker/docker-compose.yaml $@
 
 createsuperuser:
 	docker exec -it perimeter python manage.py $@

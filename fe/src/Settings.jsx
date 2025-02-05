@@ -37,7 +37,6 @@ function Field(props) {
 
 export default function Settings() {
   const [settings, setSettings] = useState([]);
-  const [radiusPassword, setRadiusPassword] = useState("");
   const [loading, setLoading] = useState(true);
 
   const fetchSettings = () => {
@@ -45,7 +44,6 @@ export default function Settings() {
     axios.get(API_URL)
       .then((response) => {
         setSettings(response.data);
-        setRadiusPassword(settings.radius_password);
         setLoading(false);
       })
       .catch((error) => {
@@ -74,15 +72,6 @@ export default function Settings() {
     putSettings();
   };
 
-  const onRadiusPasswordChange = (ev) => {
-    setRadiusPassword(ev.target.value);
-  };
-
-  const onRadiusPasswordSet = () => {
-    settings.radius_password = radiusPassword;
-    putSettings();
-  };
-
   useEffect(fetchSettings, []);
 
   console.log(settings);
@@ -93,21 +82,6 @@ export default function Settings() {
           <Radio.Button value="TRUST_AND_VERIFY">Trust and Verify</Radio.Button>
           <Radio.Button value="LOCK">Lock</Radio.Button>
         </Radio.Group>
-      </Field>
-      <Field title="Radius Password">
-        <Row>
-          <Col>
-            <Input.Password
-              placeholder="input password"
-              defaultValue={settings.radius_password}
-              onChange={onRadiusPasswordChange}
-              iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-            />
-          </Col>
-          <Col>
-            <Button onClick={onRadiusPasswordSet}>Set</Button>
-          </Col>
-        </Row>
       </Field>
     </>
   );

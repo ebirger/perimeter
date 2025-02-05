@@ -1,8 +1,7 @@
-version: "3"
 services:
   perimeter:
       build:
-         context: .
+         context: ..
          dockerfile: docker/Dockerfile
       container_name: perimeter
       volumes:

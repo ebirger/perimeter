@@ -10,4 +10,4 @@ class DeviceAdmin(admin.ModelAdmin):
 
 @admin.register(GlobalSettings)
 class GlobalSettingsAdmin(admin.ModelAdmin):
-    list_display = ('enforcement_mode', 'radius_password')
+    list_display = ('enforcement_mode',)

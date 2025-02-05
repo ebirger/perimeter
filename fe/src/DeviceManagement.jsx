@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StopOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Space, Table, Tag, Button } from 'antd';
+import { Space, Table, Tag, Button, Spin } from 'antd';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
@@ -149,7 +149,9 @@ export default function DeviceManagement(props) {
         ip: device.ip_address,
       }
   ));
-  return <Table columns={columns} dataSource={dataSource} />;
+  return (loading ? <Spin /> :
+    <Table columns={columns} dataSource={dataSource} />
+  );
 }
 
 DeviceManagement.propTypes = {

@@ -40,4 +40,3 @@ class GlobalSettings(SingletonModel):
                  ('LOCK', 'Lock')],
         default='TRUST_AND_VERIFY'
     )
-    radius_password = models.CharField(null=True, blank=True, max_length=100)
