@@ -1,13 +1,18 @@
 #!/usr/bin/python
 import sys
-import requests
+import logging
 import enum
 from dataclasses import dataclass
+import requests
 from pyrad import dictionary, packet, server
+import utils
 
 
 DEVICES_URL = 'http://127.0.0.1:8001/api/devices/'
 SETTINGS_URL = 'http://127.0.0.1:8001/api/global_settings/1/'
+
+
+log = logging.getLogger(sys.argv[0])
 
 
 class ClientState(enum.Enum):
@@ -37,7 +42,7 @@ class Client:
         staid = pkt.get('Calling-Station-Id', [''])[0]
         name = pkt.get('User-Name', [''])[0]
         mac = staid.replace('-', ':').lower()
-        print(f'{name}: MAC {mac} ip {ipaddr}')
+        log.info('%s: MAC %s ip %s', name, mac, ipaddr)
         return cls(name=name, mac_address=mac, ip_addr=ipaddr,
                    state=ClientState.CLIENT_PENDING)
 
@@ -52,7 +57,7 @@ class Client:
             j['ip_address'] = self.ip_addr
         resp = requests.post(DEVICES_URL, json=j)
         resp.raise_for_status()
-        print(resp.json())
+        log.debug(resp.json())
 
     def fetch(self):
         self.state = ClientState.CLIENT_UNKNOWN
@@ -78,7 +83,7 @@ class Client:
             return
         resp = requests.patch(f'{DEVICES_URL}{self.obj_id}/',
                               json={'ip_address': self.ip_addr})
-        print(resp.json())
+        log.debug(resp.json())
 
     def get_create(self):
         try:
@@ -90,22 +95,20 @@ class Client:
 
 class RadServer(server.Server):
     def HandleAuthPacket(self, pkt):
-        print('Received an authentication request')
-        print('Attributes:')
+        log.info('Received an authentication request')
+        log.debug('Attributes:')
         for attr in pkt.keys():
-            print(f'{attr}: {pkt[attr]}')
-        sys.stdout.flush()
+            log.debug(f'{attr}: {pkt[attr]}')
 
         reply = self.CreateReplyPacket(pkt)
 
         settings = get_settings()
-        print(f'enforcement_mode: {settings["enforcement_mode"]}')
+        log.info('enforcement_mode: %s', settings['enforcement_mode'])
 
         c = Client.from_pkt(pkt)
         c.get_create()
         state = c.state
-        print(f'MAC {c.mac_address} state is {state}')
-        sys.stdout.flush()
+        log.info('MAC %s state is %s', c.mac_address, state)
 
         match state:
             case ClientState.CLIENT_UNKNOWN | ClientState.CLIENT_PENDING:
@@ -121,15 +124,14 @@ class RadServer(server.Server):
         self.SendReplyPacket(pkt.fd, reply)
 
     def HandleAcctPacket(self, pkt):
-        print('Received an accounting request')
-        print('Attributes:')
+        log.debug('Received an accounting request')
+        log.debug('Attributes:')
         for attr in pkt.keys():
-            print(f'{attr}: {pkt[attr]}')
-        sys.stdout.flush()
+            log.debug(f'{attr}: {pkt[attr]}')
 
         reply = self.CreateReplyPacket(pkt)
         self.SendReplyPacket(pkt.fd, reply)
-        
+
         c = Client.from_pkt(pkt)
         c.get_create()
         c.update()
@@ -138,9 +140,10 @@ class RadServer(server.Server):
 if __name__ == '__main__':
     AUTH_PORT = 1911
     ACCT_PORT = 1912
-    
-    print(f'Creating RADIUS Server. auth {AUTH_PORT}, acct {ACCT_PORT}')
-    sys.stdout.flush()
+
+    utils.log_setup()
+
+    log.info('Creating RADIUS Server. auth %s, acct %s', AUTH_PORT, ACCT_PORT)
     srv = RadServer(authport=AUTH_PORT, acctport=ACCT_PORT,
                      dict=dictionary.Dictionary('dictionary'))
 

@@ -1,8 +1,14 @@
 #!/usr/bin/python
+import sys
 import os
 import time
 import json
+import logging
 import requests
+import utils
+
+
+log = logging.getLogger(sys.argv[0])
 
 
 UNIFI_BASE = 'https://unifi.birger.me'
@@ -42,9 +48,14 @@ def enrich_perimeter_clients(pcs, ucs):
         c['hostname'] = u['name']
         update_perimeter_client(c)
 
- 
-while True:    
-    pcs = get_perimeter_clients()
-    ucs = get_unifi_clients()
-    enrich_perimeter_clients(pcs, ucs)
-    time.sleep(60)
+
+if __name__ == '__main__':
+    utils.log_setup()
+
+    log.info('Starting unifi syncer')
+
+    while True:
+        pcs = get_perimeter_clients()
+        ucs = get_unifi_clients()
+        enrich_perimeter_clients(pcs, ucs)
+        time.sleep(60)
