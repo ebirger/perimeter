@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Spin, Radio, Typography, Row, Col } from 'antd';
+import { Spin, Radio, Typography, Row, Col, Input, Button } from 'antd';
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 const { Text } = Typography;
 import axios from 'axios';
 
@@ -36,10 +37,24 @@ function Field(props) {
 
 export default function Settings() {
   const [settings, setSettings] = useState([]);
+  const [radiusPassword, setRadiusPassword] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const onEnforcementModeChange = (ev) => {
-    settings.enforcement_mode = ev.target.value;
+  const fetchSettings = () => {
+    setLoading(true);
+    axios.get(API_URL)
+      .then((response) => {
+        setSettings(response.data);
+        setRadiusPassword(settings.radius_password);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setSettings({enforcement_mode: 'TRUST_AND_VERIFY'});
+        setLoading(false);
+      });
+  };
+
+  const putSettings = () => {
     const req = fetch(API_URL, {
       credentials: 'include',
       method: 'PUT',
@@ -54,27 +69,46 @@ export default function Settings() {
     req.then(fetchSettings);
   };
 
-  const fetchSettings = () => {
-    setLoading(true);
-    axios.get(API_URL)
-      .then((response) => {
-        setSettings(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setSettings({enforcement_mode: 'TRUST_AND_VERIFY'});
-        setLoading(false);
-      });
+  const onEnforcementModeChange = (ev) => {
+    settings.enforcement_mode = ev.target.value;
+    putSettings();
+  };
+
+  const onRadiusPasswordChange = (ev) => {
+    setRadiusPassword(ev.target.value);
+  };
+
+  const onRadiusPasswordSet = () => {
+    settings.radius_password = radiusPassword;
+    putSettings();
   };
 
   useEffect(fetchSettings, []);
 
   console.log(settings);
-  return loading ? <Spin /> :
-    <Field title="Enforcement Mode">
-      <Radio.Group value={settings.enforcement_mode} onChange={onEnforcementModeChange}>
-        <Radio.Button value="TRUST_AND_VERIFY">Trust and Verify</Radio.Button>
-        <Radio.Button value="LOCK">Lock</Radio.Button>
-      </Radio.Group>
-    </Field>;
+  return (loading ? <Spin /> :
+    <>
+      <Field title="Enforcement Mode">
+        <Radio.Group value={settings.enforcement_mode} onChange={onEnforcementModeChange}>
+          <Radio.Button value="TRUST_AND_VERIFY">Trust and Verify</Radio.Button>
+          <Radio.Button value="LOCK">Lock</Radio.Button>
+        </Radio.Group>
+      </Field>
+      <Field title="Radius Password">
+        <Row>
+          <Col>
+            <Input.Password
+              placeholder="input password"
+              defaultValue={settings.radius_password}
+              onChange={onRadiusPasswordChange}
+              iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+            />
+          </Col>
+          <Col>
+            <Button onClick={onRadiusPasswordSet}>Set</Button>
+          </Col>
+        </Row>
+      </Field>
+    </>
+  );
 }
