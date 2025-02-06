@@ -2,10 +2,9 @@
 import sys
 import os
 import time
-import json
 import logging
 import requests
-import utils
+from . import utils
 
 
 log = logging.getLogger(sys.argv[0])
@@ -14,24 +13,26 @@ log = logging.getLogger(sys.argv[0])
 UNIFI_BASE = 'https://unifi.birger.me'
 CLIENTS_PATH = '/proxy/network/v2/api/site/default/clients/active'
 PERIMETER_BASE = 'http://127.0.0.1:8001'
+TIMEOUT = 30
 
 
 def get_unifi_clients():
     headers = {'X-API-KEY': os.environ.get('UNIFI_TOKEN')}
-    resp = requests.get(f'{UNIFI_BASE}/{CLIENTS_PATH}', headers=headers)
+    resp = requests.get(f'{UNIFI_BASE}/{CLIENTS_PATH}', headers=headers,
+                        timeout=TIMEOUT)
     resp.raise_for_status()
     return resp.json()
 
 
 def get_perimeter_clients():
-    resp = requests.get(f'{PERIMETER_BASE}/api/devices/')
+    resp = requests.get(f'{PERIMETER_BASE}/api/devices/', timeout=TIMEOUT)
     resp.raise_for_status()
     return resp.json()
 
 
 def update_perimeter_client(c):
     resp = requests.patch(f'{PERIMETER_BASE}/api/devices/{c["id"]}/',
-                          json={'hostname': c['hostname']})
+                          json={'hostname': c['hostname']}, timeout=TIMEOUT)
     resp.raise_for_status()
 
 
@@ -55,7 +56,10 @@ if __name__ == '__main__':
     log.info('Starting unifi syncer')
 
     while True:
-        pcs = get_perimeter_clients()
-        ucs = get_unifi_clients()
-        enrich_perimeter_clients(pcs, ucs)
+        try:
+            enrich_perimeter_clients(get_perimeter_clients(),
+                                     get_unifi_clients())
+        except:  # pylint: disable=bare-except
+            pass
+
         time.sleep(60)

@@ -29,7 +29,7 @@ class SingletonModel(models.Model):
 
     @classmethod
     def load(cls):
-        obj, created = cls.objects.get_or_create(pk=1)
+        obj, _ = cls.objects.get_or_create(pk=1)  # pylint: disable=no-member
         return obj
 
 

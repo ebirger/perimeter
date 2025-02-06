@@ -7,5 +7,5 @@ def log_setup():
         level = logging.DEBUG
     else:
         level = logging.INFO
-    
+
     logging.basicConfig(level=level)

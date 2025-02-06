@@ -5,11 +5,12 @@ import enum
 from dataclasses import dataclass
 import requests
 from pyrad import dictionary, packet, server
-import utils
+from . import utils
 
 
 DEVICES_URL = 'http://127.0.0.1:8001/api/devices/'
 SETTINGS_URL = 'http://127.0.0.1:8001/api/global_settings/1/'
+TIMEOUT = 30
 
 
 log = logging.getLogger(sys.argv[0])
@@ -23,7 +24,7 @@ class ClientState(enum.Enum):
 
 
 def get_settings():
-    resp = requests.get(SETTINGS_URL)
+    resp = requests.get(SETTINGS_URL, timeout=TIMEOUT)
     resp.raise_for_status()
     return resp.json()
 
@@ -55,7 +56,7 @@ class Client:
             j['hostname'] = self.name
         if self.ip_addr:
             j['ip_address'] = self.ip_addr
-        resp = requests.post(DEVICES_URL, json=j)
+        resp = requests.post(DEVICES_URL, json=j, timeout=TIMEOUT)
         resp.raise_for_status()
         log.debug(resp.json())
 
@@ -64,10 +65,11 @@ class Client:
         if not self.mac_address:
             return
         resp = requests.get(DEVICES_URL,
-                            params={'mac_address': self.mac_address})
+                            params={'mac_address': self.mac_address},
+                            timeout=TIMEOUT)
         resp.raise_for_status()
         if not (j := resp.json()):
-            raise Exception('Not found')
+            raise Exception('Not found')  # pylint: disable=broad-exception-raised
         j = j[0]
         self.obj_id = j['id']
         match j['status']:
@@ -82,13 +84,14 @@ class Client:
         if self.obj_id is None:
             return
         resp = requests.patch(f'{DEVICES_URL}{self.obj_id}/',
-                              json={'ip_address': self.ip_addr})
+                              json={'ip_address': self.ip_addr},
+                              timeout=TIMEOUT)
         log.debug(resp.json())
 
     def get_create(self):
         try:
             self.fetch()
-        except Exception as ex:
+        except:  # pylint: disable=bare-except
             self.post()
             self.fetch()
 
@@ -97,8 +100,8 @@ class RadServer(server.Server):
     def HandleAuthPacket(self, pkt):
         log.info('Received an authentication request')
         log.debug('Attributes:')
-        for attr in pkt.keys():
-            log.debug(f'{attr}: {pkt[attr]}')
+        for k, v in pkt.items():
+            log.debug('%s: %s', k, v)
 
         reply = self.CreateReplyPacket(pkt)
 
@@ -126,8 +129,8 @@ class RadServer(server.Server):
     def HandleAcctPacket(self, pkt):
         log.debug('Received an accounting request')
         log.debug('Attributes:')
-        for attr in pkt.keys():
-            log.debug(f'{attr}: {pkt[attr]}')
+        for k, v in pkt.items():
+            log.debug('%s: %s', k, v)
 
         reply = self.CreateReplyPacket(pkt)
         self.SendReplyPacket(pkt.fd, reply)
@@ -145,7 +148,7 @@ if __name__ == '__main__':
 
     log.info('Creating RADIUS Server. auth %s, acct %s', AUTH_PORT, ACCT_PORT)
     srv = RadServer(authport=AUTH_PORT, acctport=ACCT_PORT,
-                     dict=dictionary.Dictionary('dictionary'))
+                    dict=dictionary.Dictionary('dictionary'))
 
     # add clients (address, secret, name)
     srv.hosts['0.0.0.0'] = server.RemoteHost('0.0.0.0', b'fufu', 'any')

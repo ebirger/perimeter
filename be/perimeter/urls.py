@@ -1,9 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
-from rest_framework.routers import DefaultRouter
-from devices.views import DeviceViewSet, GlobalSettingsViewSet
 from django.views.generic import TemplateView
-from django.views.decorators.csrf import csrf_exempt
+from devices.views import DeviceViewSet, GlobalSettingsViewSet
+from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'devices', DeviceViewSet)
