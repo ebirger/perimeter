@@ -6,7 +6,7 @@ RUN npm install
 COPY fe .
 RUN npm run build
 
-FROM python:3.12 AS backend
+FROM python:3.13 AS backend
 
 WORKDIR /app
 
