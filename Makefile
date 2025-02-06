@@ -1,6 +1,6 @@
 all: build
 
-build up:
+build up watch:
 	docker compose -f docker/docker-compose.yaml $@
 
 createsuperuser:

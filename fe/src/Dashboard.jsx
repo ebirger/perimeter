@@ -93,7 +93,7 @@ export default function Dashboard(props) {
           textAlign: 'left',
         }}
       >
-	Perimeter is open source software, made by Eyal Birger
+	Perimeter is open source software.
       </Footer>
     </Layout>
   );
