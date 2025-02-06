@@ -12,6 +12,9 @@
   - [Configuration](#configuration)
 - [Screenshots](#screenshots)
 - [Configuring UniFi Network Controller](#configuring-unifi-network-controller)
+- [UniFi Hostname Sync](#unifi-hostname-sync)
+- [Settings](#settings)
+- [Configuration](#configuration)
 - [License](#license)
 
 ---
@@ -74,10 +77,10 @@ To configure the **UniFi Network Controller** to send **RADIUS authentication an
    - Configure the following settings:
      - **Authentication Server:** `<PERIMETER_CONTAINER_IP>`
      - **Authentication Port:** `1812`
-     - **Shared Secret:** `<YOUR_SECRET>`
+     - **Shared Secret:** `<RADIUS_PASSWORD>`
      - **Accounting Server:** `<PERIMETER_CONTAINER_IP>`
      - **Accounting Port:** `1813`
-     - **Accounting Shared Secret:** `<YOUR_SECRET>`
+     - **Accounting Shared Secret:** `<RADIUS_PASSWORD>`
      - Enable **Accounting**
 
 4. **Apply Profile to a Wireless Network**
@@ -94,6 +97,32 @@ To configure the **UniFi Network Controller** to send **RADIUS authentication an
    ```sh
    docker logs -f perimeter
    ```
+
+---
+
+## UniFi Hostname Sync
+
+Perimeter can be configured to **poll the UniFi Network Controller** to retrieve hostnames for seen MAC addresses. If enabled, Perimeter will periodically request device information from the UniFi API and use it to enhance visibility into connected clients.
+
+---
+
+## Settings
+
+Perimeter supports different enforcement modes for handling unknown and pending clients:
+
+- **Trust and Verify:** Allows unknown/pending clients to connect and lists them in the "pending" section.
+- **Lock:** Prevents unknown/pending clients from connecting but still lists them in the "pending" section.
+
+---
+
+## Configuration
+
+Perimeter can be configured using **environment variables**:
+
+- `DEBUG`: If set to `true`, increases the log level for debugging.
+- `UNIFI_TOKEN`: UniFi API key for syncing hostname data.
+- `UNIFI_API_BASE`: Base URL of the UniFi API.
+- `RADIUS_PASSWORD`: Password used for RADIUS authentication (referenced in the [Configuring UniFi Network Controller](#configuring-unifi-network-controller) section).
 
 ---
 
