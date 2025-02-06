@@ -23,6 +23,18 @@ function getCookie(name) {
 
 const csrftoken = getCookie('csrftoken');
 
+const DATE_FORMAT_OPTIONS = {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+  second: "numeric",
+  timeZoneName: "short"
+};
+
+const dateFormat = new Intl.DateTimeFormat('en-US', DATE_FORMAT_OPTIONS);
+
 export default function DeviceManagement(props) {
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -111,6 +123,11 @@ export default function DeviceManagement(props) {
       key: 'ip',
     },
     {
+      title: 'Last Seen',
+      dataIndex: 'last_seen',
+      key: 'last_seen',
+    },
+    {
       title: 'Action',
       key: 'action',
       render: (_, record) => (
@@ -147,6 +164,7 @@ export default function DeviceManagement(props) {
         name: device.hostname,
         mac: device.mac_address,
         ip: device.ip_address,
+        last_seen: dateFormat.format(new Date(device.last_seen)),
       }
   ));
   return (loading ? <Spin /> :

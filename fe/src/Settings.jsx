@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Spin, Radio, Typography, Row, Col, Input, Button } from 'antd';
-import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { Spin, Radio, Typography, Row, Col, Input, Button, Divider } from 'antd';
+import { EyeInvisibleOutlined, EyeTwoTone, DashboardOutlined } from '@ant-design/icons';
 const { Text } = Typography;
 import axios from 'axios';
 
@@ -83,6 +83,8 @@ export default function Settings() {
           <Radio.Button value="LOCK">Lock</Radio.Button>
         </Radio.Group>
       </Field>
+      <Divider />
+      <Button href="/admin/" target="_blank" icon={<DashboardOutlined />}>Open Django Admin</Button>
     </>
   );
 }
