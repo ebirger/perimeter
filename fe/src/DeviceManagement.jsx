@@ -3,25 +3,9 @@ import { StopOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Space, Table, Tag, Button, Spin } from 'antd';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import { csrftoken } from './utils.js';
 
 const API_URL = "/api/devices";
-
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-const csrftoken = getCookie('csrftoken');
 
 const DATE_FORMAT_OPTIONS = {
   year: "numeric",

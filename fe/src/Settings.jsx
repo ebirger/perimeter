@@ -1,29 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Spin, Radio, Typography, Row, Col, Input, Button, Divider } from 'antd';
-import { EyeInvisibleOutlined, EyeTwoTone, DashboardOutlined } from '@ant-design/icons';
+import { Spin, Radio, Typography, Row, Col, Button, Divider } from 'antd';
+import { DashboardOutlined } from '@ant-design/icons';
 const { Text } = Typography;
 import axios from 'axios';
+import { csrftoken } from './utils.js';
 
 const API_URL = '/api/global_settings/1/';
 
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-const csrftoken = getCookie('csrftoken');
-
-function Field(props) {
+const Field = (props) => {
   return (
     <Row align="middle" gutter={10}>
       <Col flex="none">
@@ -33,7 +17,7 @@ function Field(props) {
         {React.Children.only(props.children)}
       </Col>
     </Row>);
-}
+};
 
 export default function Settings() {
   const [settings, setSettings] = useState([]);
@@ -74,7 +58,6 @@ export default function Settings() {
 
   useEffect(fetchSettings, []);
 
-  console.log(settings);
   return (loading ? <Spin /> :
     <>
       <Field title="Enforcement Mode">
