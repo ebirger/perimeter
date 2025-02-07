@@ -71,8 +71,8 @@ def get_perimeter_clients():
 
 
 def update_perimeter_client(c):
-    resp = requests.patch(f'{PERIMETER_BASE}/api/devices/{c["id"]}/',
-                          json={'hostname': c['hostname']}, timeout=TIMEOUT)
+    requests.patch(f'{PERIMETER_BASE}/api/devices/{c["id"]}/',
+                   json={'hostname': c['hostname']}, timeout=TIMEOUT)
 
 
 def enrich_perimeter_clients(pcs, ucs):

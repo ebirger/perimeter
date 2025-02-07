@@ -75,7 +75,7 @@ class Client:
             raise Exception('Not found')  # pylint: disable=broad-exception-raised
         j = j[0]
         self.obj_id = j['id']
-        self.hsostname = j['hostname']
+        self.hostname = j['hostname']
         match j['status']:
             case 'blocked':
                 self.state = ClientState.CLIENT_BLOCKED
