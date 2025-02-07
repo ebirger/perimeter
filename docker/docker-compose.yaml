@@ -17,6 +17,7 @@ services:
           - action: rebuild
             path: ../be/
       environment:
+        UNIFI_BASE: ${UNIFI_BASE}
         UNIFI_TOKEN: ${UNIFI_TOKEN}
         RADIUS_PASSWORD: ${RADIUS_PASSWORD}
 

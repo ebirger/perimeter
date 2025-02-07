@@ -12,7 +12,6 @@ import utils
 DEVICES_URL = 'http://127.0.0.1:8001/api/devices/'
 SETTINGS_URL = 'http://127.0.0.1:8001/api/global_settings/1/'
 TIMEOUT = 30
-RADIUS_PASSWORD = os.environ.get('RADIUS_PASSWORD')
 
 
 log = logging.getLogger(sys.argv[0])
@@ -148,21 +147,20 @@ class RadServer(server.Server):
 
 
 if __name__ == '__main__':
-    AUTH_PORT = 1911
-    ACCT_PORT = 1912
+    utils.common_init(['RADIUS_PASSWORD',
+                       ('RADIUS_AUTH_PORT', '1911'),
+                       ('RADIUS_ACCT_PORT', '1912')])
 
-    utils.log_setup()
+    auth_port = int(utils.ENV.RADIUS_AUTH_PORT)
+    acct_port = int(utils.ENV.RADIUS_ACCT_PORT)
 
-    if not RADIUS_PASSWORD:
-        log.error('RADIUS_PASSWORD environment variable required')
-        sys.exit(0)
+    log.info('Creating RADIUS Server. auth %s, acct %s', auth_port, acct_port)
 
-    log.info('Creating RADIUS Server. auth %s, acct %s', AUTH_PORT, ACCT_PORT)
-    srv = RadServer(authport=AUTH_PORT, acctport=ACCT_PORT,
+    srv = RadServer(authport=auth_port, acctport=acct_port,
                     dict=dictionary.Dictionary('dictionary'))
 
     # add clients (address, secret, name)
-    passwd = RADIUS_PASSWORD.encode('utf-8')
+    passwd = utils.ENV.RADIUS_PASSWORD.encode('utf-8')
     srv.hosts['0.0.0.0'] = server.RemoteHost('0.0.0.0', passwd, 'any')
     srv.BindToAddress('0.0.0.0')
 

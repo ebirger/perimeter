@@ -11,15 +11,15 @@ import utils
 log = logging.getLogger(sys.argv[0])
 
 
-UNIFI_BASE = 'https://unifi.birger.me'
 UNIFI_SITE_BASE = 'proxy/network/integrations/v1/sites'
+UNIFI_CLIENTS_HISTORY = 'proxy/network/v2/api/site/default/clients/history'
 PERIMETER_BASE = 'http://127.0.0.1:8001'
 TIMEOUT = 30
 
 
 def unifi_get(rel_path=None, params=None):
-    headers = {'X-API-KEY': os.environ.get('UNIFI_TOKEN')}
-    url = f'{UNIFI_BASE}/{rel_path}'
+    headers = {'X-API-KEY': utils.ENV.UNIFI_TOKEN}
+    url = f'{utils.ENV.UNIFI_BASE}/{rel_path}'
     resp = requests.get(url, headers=headers, timeout=TIMEOUT, params=params)
     resp.raise_for_status()
     ret = resp.json()
@@ -57,8 +57,7 @@ def get_unifi_historical_client_names():
         'includeUnifiDevices': 'true',
         'withinHours': '0',
     }
-    ret = unifi_get('proxy/network/v2/api/site/default/clients/history',
-                    params=params)
+    ret = unifi_get(UNIFI_CLIENTS_HISTORY, params=params)
     return {mac: name for u in ret
             if ((mac := u.get('mac')) and (name := u.get('name')))}
 
@@ -91,7 +90,7 @@ def enrich_perimeter_clients(pcs, ucs):
 
 
 if __name__ == '__main__':
-    utils.log_setup()
+    utils.common_init(['UNIFI_TOKEN', 'UNIFI_BASE'])
 
     log.info('Starting unifi syncer')
     site_id = get_unifi_site_id()
