@@ -20,6 +20,6 @@ COPY be/requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY be/ .
-COPY --from=frontend /frontend/ /app/staticfiles
+COPY --from=frontend /frontend/dist /app/staticfiles/dist/
 
 CMD ["/app/entrypoint.sh"]
