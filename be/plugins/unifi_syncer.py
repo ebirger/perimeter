@@ -4,7 +4,7 @@ import os
 import time
 import logging
 import requests
-from . import utils
+import utils
 
 
 log = logging.getLogger(sys.argv[0])

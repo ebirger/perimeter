@@ -51,7 +51,11 @@ export default function Dashboard(props) {
             borderRadius: borderRadiusLG,
           }}
         >
-          <Sider style={{ background: colorBgContainer }} width={200} >
+          <Sider
+	    style={{ background: colorBgContainer}}
+	    collapsedWidth={0}
+	    breakpoint="xs"
+	    width={200}>
             <Menu
               mode="inline"
               defaultSelectedKeys={[state]}
@@ -59,7 +63,7 @@ export default function Dashboard(props) {
               items={sidebarItems}
             />
           </Sider>
-          <Content style={{ padding: "0 24px", minHeight: 280 }}>
+          <Content style={{ padding: "0 24px", minHeight: "100vh" }}>
 	    {state === "settings" ? <Settings /> : <DeviceManagement state={state} />}
           </Content>
         </Layout>

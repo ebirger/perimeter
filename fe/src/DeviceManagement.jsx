@@ -152,7 +152,7 @@ export default function DeviceManagement(props) {
       }
   ));
   return (loading ? <Spin /> :
-    <Table columns={columns} dataSource={dataSource} />
+    <Table tableLayout="auto" columns={columns} dataSource={dataSource} />
   );
 }
 

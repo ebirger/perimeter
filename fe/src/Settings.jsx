@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Spin, Radio, Typography, Row, Col, Button, Divider } from 'antd';
-import { DashboardOutlined } from '@ant-design/icons';
+import { ExportOutlined } from '@ant-design/icons';
 const { Text } = Typography;
 import axios from 'axios';
 import { csrftoken } from './utils.js';
@@ -67,7 +67,7 @@ export default function Settings() {
         </Radio.Group>
       </Field>
       <Divider />
-      <Button href="/admin/" target="_blank" icon={<DashboardOutlined />}>Open Django Admin</Button>
+      <Button href="/admin/" target="_blank" icon={<ExportOutlined />}>Open Django Admin</Button>
     </>
   );
 }

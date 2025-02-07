@@ -1,16 +1,18 @@
 #!/usr/bin/python
+import os
 import sys
 import logging
 import enum
 from dataclasses import dataclass
 import requests
 from pyrad import dictionary, packet, server
-from . import utils
+import utils
 
 
 DEVICES_URL = 'http://127.0.0.1:8001/api/devices/'
 SETTINGS_URL = 'http://127.0.0.1:8001/api/global_settings/1/'
 TIMEOUT = 30
+RADIUS_PASSWORD = os.environ.get('RADIUS_PASSWORD')
 
 
 log = logging.getLogger(sys.argv[0])
@@ -146,12 +148,17 @@ if __name__ == '__main__':
 
     utils.log_setup()
 
+    if not RADIUS_PASSWORD:
+        log.error('RADIUS_PASSWORD environment variable required')
+        sys.exit(0)
+
     log.info('Creating RADIUS Server. auth %s, acct %s', AUTH_PORT, ACCT_PORT)
     srv = RadServer(authport=AUTH_PORT, acctport=ACCT_PORT,
                     dict=dictionary.Dictionary('dictionary'))
 
     # add clients (address, secret, name)
-    srv.hosts['0.0.0.0'] = server.RemoteHost('0.0.0.0', b'fufu', 'any')
+    passwd = RADIUS_PASSWORD.encode('utf-8')
+    srv.hosts['0.0.0.0'] = server.RemoteHost('0.0.0.0', passwd, 'any')
     srv.BindToAddress('0.0.0.0')
 
     srv.Run()
