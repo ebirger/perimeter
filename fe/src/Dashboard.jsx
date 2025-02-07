@@ -4,6 +4,7 @@ import { Layout, Menu, theme } from 'antd';
 import DeviceManagement from "./DeviceManagement";
 import Settings from "./Settings";
 import perimeterLogo from '../public/perimeter.png'
+import "./styles/Dashboard.css";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -42,14 +43,12 @@ export default function Dashboard(props) {
         <img src={perimeterLogo} width="60px" height="60px" />
         Perimeter
       </Header>
-      <Content style={{ padding: "0 16px", overflowX: "hidden" }}>
+      <Content className="dashboard-outer-content">
         <Layout
+	  className="dashboard-inner-layout"
           style={{
-            padding: "24px 0",
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
-            maxWidth: "100%",
-            overflowX: "hidden",
           }}
         >
           <Sider
@@ -65,13 +64,7 @@ export default function Dashboard(props) {
               items={sidebarItems}
             />
           </Sider>
-          <Content
-            style={{
-              padding: "0 16px",
-              overflowX: "auto", // Ensures content scrolls instead of breaking layout
-              maxWidth: "100%",
-            }}
-          >
+          <Content className="dashboard-inner-content">
             {state === "settings" ? <Settings /> : <DeviceManagement state={state} />}
           </Content>
         </Layout>
