@@ -37,6 +37,7 @@ class Client:
     mac_address: str
     ip_addr: str
     state: ClientState
+    hostname: str | None = None
     obj_id: int | None = None
 
     @classmethod
@@ -45,7 +46,7 @@ class Client:
         staid = pkt.get('Calling-Station-Id', [''])[0]
         name = pkt.get('User-Name', [''])[0]
         mac = staid.replace('-', ':').lower()
-        log.info('%s: MAC %s ip %s', name, mac, ipaddr)
+        log.debug('%s: MAC %s ip %s', name, mac, ipaddr)
         return cls(name=name, mac_address=mac, ip_addr=ipaddr,
                    state=ClientState.CLIENT_PENDING)
 
@@ -74,6 +75,7 @@ class Client:
             raise Exception('Not found')  # pylint: disable=broad-exception-raised
         j = j[0]
         self.obj_id = j['id']
+        self.hsostname = j['hostname']
         match j['status']:
             case 'blocked':
                 self.state = ClientState.CLIENT_BLOCKED
@@ -100,7 +102,7 @@ class Client:
 
 class RadServer(server.Server):
     def HandleAuthPacket(self, pkt):
-        log.info('Received an authentication request')
+        log.debug('Received an authentication request')
         log.debug('Attributes:')
         for k, v in pkt.items():
             log.debug('%s: %s', k, v)
@@ -108,12 +110,12 @@ class RadServer(server.Server):
         reply = self.CreateReplyPacket(pkt)
 
         settings = get_settings()
-        log.info('enforcement_mode: %s', settings['enforcement_mode'])
+        log.debug('enforcement_mode: %s', settings['enforcement_mode'])
 
         c = Client.from_pkt(pkt)
         c.get_create()
         state = c.state
-        log.info('MAC %s state is %s', c.mac_address, state)
+        log.debug('MAC %s state is %s', c.mac_address, state)
 
         match state:
             case ClientState.CLIENT_UNKNOWN | ClientState.CLIENT_PENDING:
@@ -125,6 +127,9 @@ class RadServer(server.Server):
                 reply.code = packet.AccessReject
             case ClientState.CLIENT_ALLOWED:
                 reply.code = packet.AccessAccept
+
+        if reply.code == packet.AccessReject:
+            log.info('Blocked %s [%s]', c.hostname, c.mac_address)
 
         self.SendReplyPacket(pkt.fd, reply)
 
