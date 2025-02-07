@@ -37,39 +37,47 @@ export default function Dashboard(props) {
   const state = props.state;
 
   return (
-    <Layout>
+    <Layout style={{ minHeight: "100vh", overflowX: "hidden" }}>
       <Header style={{ color: "white", display: "flex", alignItems: "center" }}>
         <img src={perimeterLogo} width="60px" height="60px" />
-	Perimeter
+        Perimeter
       </Header>
-      <Content style={{ padding: "0 48px" }}>
-        <Layout style={{
-            margin: "24px 16px",
+      <Content style={{ padding: "0 16px", overflowX: "hidden" }}>
+        <Layout
+          style={{
             padding: "24px 0",
-	    minHeight: "100vh",
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
+            maxWidth: "100%",
+            overflowX: "hidden",
           }}
         >
           <Sider
-	    style={{ background: colorBgContainer}}
-	    collapsedWidth={0}
-	    breakpoint="xs"
-	    width={200}>
+            style={{ background: colorBgContainer }}
+            collapsedWidth={0}
+            breakpoint="xs"
+            width={200}
+          >
             <Menu
               mode="inline"
               defaultSelectedKeys={[state]}
-              style={{ height: "100%" }}
+              style={{ height: "100%", maxWidth: "100%" }}
               items={sidebarItems}
             />
           </Sider>
-          <Content style={{ padding: "0 24px", minHeight: "100vh" }}>
-	    {state === "settings" ? <Settings /> : <DeviceManagement state={state} />}
+          <Content
+            style={{
+              padding: "0 16px",
+              overflowX: "auto", // Ensures content scrolls instead of breaking layout
+              maxWidth: "100%",
+            }}
+          >
+            {state === "settings" ? <Settings /> : <DeviceManagement state={state} />}
           </Content>
         </Layout>
       </Content>
-      <Footer style={{ textAlign: "left", }}>
-	Perimeter is open source software.
+      <Footer style={{ textAlign: "left" }}>
+        Perimeter is open source software.
       </Footer>
     </Layout>
   );
