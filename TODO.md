@@ -1,7 +1,6 @@
 # must haves
 - pylint
 - django app secret?
-- kill axios
 - remove unused packages
 - readme
 - github actions for packaging

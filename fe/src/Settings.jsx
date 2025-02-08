@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Spin, Radio, Typography, Row, Col, Button, Divider } from 'antd';
 import { ExportOutlined } from '@ant-design/icons';
 const { Text } = Typography;
-import axios from 'axios';
 import { csrftoken } from './utils.js';
 
 const API_URL = '/api/global_settings/1/';
@@ -28,21 +27,19 @@ export default function Settings() {
   const [settings, setSettings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchSettings = () => {
+  const fetchSettings = async () => {
     setLoading(true);
-    axios.get(API_URL)
-      .then((response) => {
-        setSettings(response.data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setSettings({enforcement_mode: 'TRUST_AND_VERIFY'});
-        setLoading(false);
-      });
+    const resp = await fetch(API_URL);
+    setLoading(false);
+    if (!resp.ok) {
+      setSettings({enforcement_mode: 'TRUST_AND_VERIFY'});
+      return;
+    }
+    setSettings(await resp.json());
   };
 
-  const putSettings = () => {
-    const req = fetch(API_URL, {
+  const putSettings = async () => {
+    await fetch(API_URL, {
       credentials: 'include',
       method: 'PUT',
       mode: 'same-origin',
@@ -53,12 +50,12 @@ export default function Settings() {
       },
       body: JSON.stringify(settings)
     });
-    req.then(fetchSettings);
+    await fetchSettings();
   };
 
-  const onEnforcementModeChange = (ev) => {
+  const onEnforcementModeChange = async (ev) => {
     settings.enforcement_mode = ev.target.value;
-    putSettings();
+    await putSettings();
   };
 
   useEffect(fetchSettings, []);
