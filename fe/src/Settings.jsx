@@ -18,6 +18,7 @@ const Field = (props) => {
       </Col>
     </Row>);
 };
+
 Field.propTypes = {
   title: PropTypes.string.isRequired,
   children: PropTypes.element.isRequired,

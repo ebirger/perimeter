@@ -25,6 +25,11 @@ services:
        context: ..
        dockerfile: docker/Dockerfile.eslint
     container_name: perimeter-eslint
+  pylint:
+    build:
+       context: ..
+       dockerfile: docker/Dockerfile.pylint
+    container_name: perimeter-pylint
 
 volumes:
   data:
