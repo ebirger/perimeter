@@ -58,7 +58,7 @@ export default function Settings() {
     await putSettings();
   };
 
-  useEffect(fetchSettings, []);
+  useEffect(() => { fetchSettings(); }, []);
 
   return (loading ? <Spin /> :
     <>

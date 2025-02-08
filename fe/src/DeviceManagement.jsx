@@ -146,14 +146,17 @@ export default function DeviceManagement(props) {
     },
   ];
 
-  useEffect(async () => {
-    const resp = await fetch(`${API_URL}/`);
-    setLoading(false);
-    if (!resp.ok) {
-      console.error('Failed to fetch devices');
-      return;
-    }
-    setDevices(await resp.json());
+  useEffect(() => {
+    const load = async () => {
+      const resp = await fetch(`${API_URL}/`);
+      setLoading(false);
+      if (!resp.ok) {
+        console.error('Failed to fetch devices');
+        return;
+      }
+      setDevices(await resp.json());
+    };
+    load();
   }, []);
 
   return (loading ? <Spin /> :
