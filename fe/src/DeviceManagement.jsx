@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import { StopOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Space, Table, Button, Spin } from 'antd';
-import axios from 'axios';
 import { csrftoken } from './utils.js';
 
 const API_URL = "/api/devices";
@@ -53,12 +52,11 @@ export default function DeviceManagement(props) {
       break;
   };
 
-  const handleAction = (state, record) => {
+  const handleAction = async (state, record) => {
     console.log(`handleAction: ${state} ${record.id}`);
     const url = `${API_URL}/${record.id}/`;
-    let req = null;
     if (state === 'deleted') {
-      req = fetch(url, {
+      await fetch(url, {
         credentials: 'include',
         method: 'DELETE',
         mode: 'same-origin',
@@ -69,7 +67,7 @@ export default function DeviceManagement(props) {
         }
       });
     } else {
-      req = fetch(url, {
+      await fetch(url, {
         credentials: 'include',
         method: 'PATCH',
         mode: 'same-origin',
@@ -81,14 +79,10 @@ export default function DeviceManagement(props) {
         body: JSON.stringify({'status': state})
       });
     }
-    req.then(
-        () => {
-          axios.get(`${API_URL}/`).then(
-            (response) => {setDevices(response.data);}
-          )
-        }
-    );
+    const resp = await fetch(`${API_URL}/`);
+    setDevices(await resp.json());
   };
+
   const dataSource = devices.filter(d=>d['status'] === props.state).map((device, idx) => (
       {
         key: idx + 1,
@@ -152,18 +146,16 @@ export default function DeviceManagement(props) {
     },
   ];
 
-  useEffect(() => {
-    axios.get(`${API_URL}/`)
-      .then((response) => {
-        setDevices(response.data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+  useEffect(async () => {
+    const resp = await fetch(`${API_URL}/`);
+    setLoading(false);
+    if (!resp.ok) {
+      console.error('Failed to fetch devices');
+      return;
+    }
+    setDevices(await resp.json());
   }, []);
 
-  console.log(devices);
   return (loading ? <Spin /> :
     <Table tableLayout="auto" columns={columns} dataSource={dataSource} />
   );
