@@ -30,7 +30,7 @@ def get_unifi_site_id():
     try:
         resp = unifi_get(UNIFI_SITE_BASE)
         return resp['data'][0]['id']
-    except:  # pylint: disable=bare-except
+    except BaseException:  # pylint: disable=broad-exception-caught
         log.exception('failed to get Unifi site ID')
         return None
 
@@ -47,7 +47,9 @@ def get_unifi_client_names(site_id):
             break
         log.info('got %s/%s', n, total_count)
 
-    return {mac: u['name'] for u in client_data if (mac := u.get('macAddress'))}
+    return {mac: u['name']
+            for u in client_data
+            if (mac := u.get('macAddress'))}
 
 
 def get_unifi_historical_client_names():
@@ -65,7 +67,6 @@ def get_perimeter_clients():
     resp = requests.get(f'{PERIMETER_BASE}/api/devices/', timeout=TIMEOUT)
     resp.raise_for_status()
     return resp.json()
-
 
 
 def update_perimeter_client(c):
@@ -103,8 +104,8 @@ def main():
             unifi_names = get_unifi_historical_client_names()
             unifi_names.update(get_unifi_client_names(site_id))
             enrich_perimeter_clients(get_perimeter_clients(), unifi_names)
-        except:  # pylint: disable=bare-except
-            log.exception('boom')
+        except BaseException:  # pylint: disable=broad-exception-caught
+            log.exception('exception enriching clients')
 
         time.sleep(60)
 

@@ -37,7 +37,7 @@ class GlobalSettingsViewSet(viewsets.ModelViewSet):
         try:
             instance = self.get_object()
             serializer = self.get_serializer(instance, data=request.data)
-        except:  # pylint: disable=bare-except
+        except BaseException:  # pylint: disable=broad-exception-caught
             serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()

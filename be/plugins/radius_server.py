@@ -70,7 +70,8 @@ class Client:
                             timeout=TIMEOUT)
         resp.raise_for_status()
         if not (j := resp.json()):
-            raise Exception('Not found')  # pylint: disable=broad-exception-raised
+            # pylint: disable=broad-exception-raised
+            raise Exception('Not found')
         j = j[0]
         self.obj_id = j['id']
         self.hostname = j['hostname']
@@ -93,7 +94,7 @@ class Client:
     def get_create(self):
         try:
             self.fetch()
-        except:  # pylint: disable=bare-except
+        except BaseException:  # pylint: disable=broad-exception-caught
             self.post()
             self.fetch()
 
