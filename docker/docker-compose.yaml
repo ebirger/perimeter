@@ -16,6 +16,8 @@ services:
             path: ../fe/
           - action: rebuild
             path: ../be/
+          - action: rebuild
+            path: ../docker
       environment:
         UNIFI_BASE: ${UNIFI_BASE}
         UNIFI_TOKEN: ${UNIFI_TOKEN}

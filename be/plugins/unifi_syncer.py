@@ -1,11 +1,10 @@
 #!/usr/bin/python
 import sys
-import os
 import time
 import json
 import logging
 import requests
-import utils
+from . import utils
 
 
 log = logging.getLogger(sys.argv[0])
@@ -31,7 +30,7 @@ def get_unifi_site_id():
     try:
         resp = unifi_get(UNIFI_SITE_BASE)
         return resp['data'][0]['id']
-    except:
+    except:  # pylint: disable=bare-except
         log.exception('failed to get Unifi site ID')
         return None
 
@@ -89,7 +88,7 @@ def enrich_perimeter_clients(pcs, ucs):
         update_perimeter_client(c)
 
 
-if __name__ == '__main__':
+def main():
     utils.common_init(['UNIFI_TOKEN', 'UNIFI_BASE'])
 
     log.info('Starting unifi syncer')
@@ -108,3 +107,7 @@ if __name__ == '__main__':
             log.exception('boom')
 
         time.sleep(60)
+
+
+if __name__ == '__main__':
+    main()

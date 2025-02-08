@@ -1,12 +1,11 @@
 #!/usr/bin/python
-import os
 import sys
 import logging
 import enum
 from dataclasses import dataclass
 import requests
 from pyrad import dictionary, packet, server
-import utils
+from . import utils
 
 
 DEVICES_URL = 'http://127.0.0.1:8001/api/devices/'
@@ -157,7 +156,7 @@ if __name__ == '__main__':
     log.info('Creating RADIUS Server. auth %s, acct %s', auth_port, acct_port)
 
     srv = RadServer(authport=auth_port, acctport=acct_port,
-                    dict=dictionary.Dictionary('dictionary'))
+                    dict=dictionary.Dictionary('plugins/dictionary'))
 
     # add clients (address, secret, name)
     passwd = utils.ENV.RADIUS_PASSWORD.encode('utf-8')
