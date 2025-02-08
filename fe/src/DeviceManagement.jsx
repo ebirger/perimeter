@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { StopOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Space, Table, Tag, Button, Spin } from 'antd';
-import axios from 'axios';
 import PropTypes from 'prop-types';
+import { StopOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Space, Table, Button, Spin } from 'antd';
+import axios from 'axios';
 import { csrftoken } from './utils.js';
 
 const API_URL = "/api/devices";
@@ -22,7 +22,6 @@ const dateFormat = new Intl.DateTimeFormat('en-US', DATE_FORMAT_OPTIONS);
 export default function DeviceManagement(props) {
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   let actions = [];
 
@@ -105,7 +104,7 @@ export default function DeviceManagement(props) {
       return {
         filterSearch: true,
         onFilter: (value, record) => record[c].startsWith(value),
-	filters: dataSource.map((d) => { return { text: d[c], value: d[c] }; }),
+        filters: dataSource.map((d) => { return { text: d[c], value: d[c] }; }),
       };
   };
 
@@ -141,6 +140,7 @@ export default function DeviceManagement(props) {
       render: (_, record) => (
         <Space size="middle">
           {actions.map((a) => <Button
+                               key={a.state}
                                icon={React.createElement(a.icon)}
                                onClick={() => handleAction(a.state, record)}
                               >
@@ -158,8 +158,7 @@ export default function DeviceManagement(props) {
         setDevices(response.data);
         setLoading(false);
       })
-      .catch((error) => {
-        setError("Failed to fetch devices.");
+      .catch(() => {
         setLoading(false);
       });
   }, []);

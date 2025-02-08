@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import PropTypes from 'prop-types';
 import { AlertOutlined, StopOutlined, CheckOutlined, SettingOutlined } from '@ant-design/icons';
 import { Layout, Menu, theme } from 'antd';
 import DeviceManagement from "./DeviceManagement";
@@ -45,7 +46,7 @@ export default function Dashboard(props) {
       </Header>
       <Content className="dashboard-outer-content">
         <Layout
-	  className="dashboard-inner-layout"
+          className="dashboard-inner-layout"
           style={{
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
@@ -75,3 +76,7 @@ export default function Dashboard(props) {
     </Layout>
   );
 }
+
+Dashboard.propTypes = {
+  state: PropTypes.string,
+};

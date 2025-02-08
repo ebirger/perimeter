@@ -1,6 +1,6 @@
 FROM node:23 AS frontend
 
-WORKDIR /frontend
+WORKDIR /fe
 COPY fe/package.json ./
 RUN npm install
 COPY fe .
@@ -20,6 +20,6 @@ COPY be/requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY be/ .
-COPY --from=frontend /frontend/dist /app/staticfiles/dist/
+COPY --from=frontend /fe/dist /app/staticfiles/dist/
 
 CMD ["/app/entrypoint.sh"]

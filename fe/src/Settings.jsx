@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from 'prop-types';
 import { Spin, Radio, Typography, Row, Col, Button, Divider } from 'antd';
 import { ExportOutlined } from '@ant-design/icons';
 const { Text } = Typography;
@@ -18,6 +19,10 @@ const Field = (props) => {
       </Col>
     </Row>);
 };
+Field.propTypes = {
+  title: PropTypes.string.isRequired,
+  children: PropTypes.element.isRequired,
+};
 
 export default function Settings() {
   const [settings, setSettings] = useState([]);
@@ -30,7 +35,7 @@ export default function Settings() {
         setSettings(response.data);
         setLoading(false);
       })
-      .catch((error) => {
+      .catch(() => {
         setSettings({enforcement_mode: 'TRUST_AND_VERIFY'});
         setLoading(false);
       });

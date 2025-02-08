@@ -20,6 +20,11 @@ services:
         UNIFI_BASE: ${UNIFI_BASE}
         UNIFI_TOKEN: ${UNIFI_TOKEN}
         RADIUS_PASSWORD: ${RADIUS_PASSWORD}
+  eslint:
+    build:
+       context: ..
+       dockerfile: docker/Dockerfile.eslint
+    container_name: perimeter-eslint
 
 volumes:
   data:

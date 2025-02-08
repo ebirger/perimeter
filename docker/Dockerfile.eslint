@@ -1,0 +1,6 @@
+FROM node:23
+
+WORKDIR /fe
+COPY fe/package.json ./
+RUN npm install
+COPY fe .
