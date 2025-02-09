@@ -32,7 +32,7 @@ def get_settings():
         resp.raise_for_status()
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 404:
-            log.info('Settings not found. using defaults')
+            log.debug('Settings not found. using defaults')
             return DEFAULT_SETTINGS
         raise
 
