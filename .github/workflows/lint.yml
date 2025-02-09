@@ -48,5 +48,5 @@ jobs:
     - name: pycodestyle
       run: |
         cd be
-        pycodestyle
+        pycodestyle .
         cd ..
