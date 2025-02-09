@@ -22,6 +22,7 @@ services:
         UNIFI_BASE: ${UNIFI_BASE}
         UNIFI_TOKEN: ${UNIFI_TOKEN}
         RADIUS_PASSWORD: ${RADIUS_PASSWORD}
+        PERIMETER_SECRET_KEY: ${PERIMETER_SECRET_KEY}
   eslint:
     build:
        context: ..

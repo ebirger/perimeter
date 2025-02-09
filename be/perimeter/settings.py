@@ -15,14 +15,10 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-7@6*ee%g2a91gwy1-lq%-ggm01tzymat9$=iyzlzz)s#bp2_q4'
+SECRET_KEY = os.environ.get('PERIMETER_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG') == 'true'
 
 ALLOWED_HOSTS = ['*']
 
@@ -37,9 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'devices',
-    'background_task',
     'corsheaders',
-    'django_filters',
     'filters',
 ]
 
