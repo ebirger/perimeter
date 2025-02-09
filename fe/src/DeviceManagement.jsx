@@ -125,6 +125,7 @@ export default function DeviceManagement(props) {
       title: 'Last Seen',
       dataIndex: 'last_seen',
       key: 'last_seen',
+      responsive: ['md'],
       sorter: (a, b) => new Date(a.last_seen) - new Date(b.last_seen),
       render: (_, record) => dateFormat.format(new Date(record.last_seen)),
     },
