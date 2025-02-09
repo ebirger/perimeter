@@ -11,6 +11,9 @@ from . import utils
 DEVICES_URL = 'http://127.0.0.1:8001/api/devices/'
 SETTINGS_URL = 'http://127.0.0.1:8001/api/global_settings/1/'
 TIMEOUT = 30
+DEFAULT_SETTINGS = {
+    'enforcement_mode': 'TRUST_AND_VERIFY'
+}
 
 
 log = logging.getLogger(sys.argv[0])
@@ -24,8 +27,15 @@ class ClientState(enum.Enum):
 
 
 def get_settings():
-    resp = requests.get(SETTINGS_URL, timeout=TIMEOUT)
-    resp.raise_for_status()
+    try:
+        resp = requests.get(SETTINGS_URL, timeout=TIMEOUT)
+        resp.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 404:
+            log.info('Settings not found. using defaults')
+            return DEFAULT_SETTINGS
+        raise
+
     return resp.json()
 
 
