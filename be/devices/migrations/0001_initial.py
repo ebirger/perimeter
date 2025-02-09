@@ -12,6 +12,16 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='GlobalSettings',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('enforcement_mode', models.CharField(choices=[('TRUST_AND_VERIFY', 'Trust and Verify'), ('LOCK', 'Lock')], default='TRUST_AND_VERIFY', max_length=30)),
+            ],
+            options={
+                'abstract': False,
+            },
+        ),
+        migrations.CreateModel(
             name='Device',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True,
