@@ -7,14 +7,13 @@
 ## Table of Contents
 
 - [Description](#description)
-- [Getting Started](#getting-started)
-  - [Running Perimeter](#running-perimeter)
-  - [Configuration](#configuration)
 - [Screenshots](#screenshots)
+- [Settings](#settings)
+- [Getting Started](#getting-started)
+  - [Configuration](#configuration)
+  - [Running Perimeter](#running-perimeter)
 - [Configuring UniFi Network Controller](#configuring-unifi-network-controller)
 - [UniFi Hostname Sync](#unifi-hostname-sync)
-- [Settings](#settings)
-- [Configuration](#configuration)
 - [License](#license)
 
 ---
@@ -33,6 +32,15 @@ Additionally, Perimeter can be integrated with a UniFi Network Controller to lea
 
 **Dashboard View**
   ![Dashboard](images/pending.png)
+
+---
+
+## Settings
+
+Perimeter supports different enforcement modes for handling unknown and pending clients:
+
+- **Trust and Verify (default) :** Allows unknown/pending clients to connect and lists them in the "pending" section.
+- **Lock:** Prevents unknown/pending clients from connecting but still lists them in the "pending" section.
 
 ---
 
@@ -122,15 +130,6 @@ and use it to enhance visibility into connected clients.
 - Go to **Control Panel**
 - Select **Integrations**
 - Follow the **Getting Started** Guide
-
----
-
-## Settings
-
-Perimeter supports different enforcement modes for handling unknown and pending clients:
-
-- **Trust and Verify (default) :** Allows unknown/pending clients to connect and lists them in the "pending" section.
-- **Lock:** Prevents unknown/pending clients from connecting but still lists them in the "pending" section.
 
 ---
 
