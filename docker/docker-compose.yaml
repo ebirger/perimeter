@@ -8,8 +8,8 @@ services:
          - data:/app/data
       ports:
          - 8001:8001
-         - 1911:1911/udp
-         - 1912:1912/udp
+         - 1911:1812/udp
+         - 1912:1813/udp
       develop:
         watch:
           - action: rebuild

@@ -148,8 +148,8 @@ class RadServer(server.Server):
 
 if __name__ == '__main__':
     utils.common_init(['RADIUS_PASSWORD',
-                       ('RADIUS_AUTH_PORT', '1911'),
-                       ('RADIUS_ACCT_PORT', '1912')])
+                       ('RADIUS_AUTH_PORT', '1812'),
+                       ('RADIUS_ACCT_PORT', '1813')])
 
     auth_port = int(utils.ENV.RADIUS_AUTH_PORT)
     acct_port = int(utils.ENV.RADIUS_ACCT_PORT)
