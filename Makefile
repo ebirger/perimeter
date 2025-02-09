@@ -18,5 +18,8 @@ pylint: pylint-image
 pycodestyle: pylint-image
 	$(COMPOSE) run --rm pylint $@ /app/
 
+makemigrations:
+	cd be/ && python manage.py $@
+
 createsuperuser:
 	docker exec -it perimeter python manage.py $@
