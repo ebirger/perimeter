@@ -1,12 +1,19 @@
-# Perimeter
-
 <p align="center">
   <img src="images/perimeter.png" alt="Perimeter Logo" width="200" height="200">
 </p>
+<p align="center"><b>Wi-Fi MAC Filtering Management Server</b></p>
 
-## Table of Contents
+# Perimeter
+Perimeter is a self-hosted small-scale MAC filtering management server designed to facilitate access management on a local wireless network.
 
-- [Description](#description)
+Perimeter uses RADIUS to allow or block clients based on defined policies.
+
+Additionally, Perimeter can be integrated with a UniFi Network Controller to learn about hostnames of connected devices, enhancing visibility and ease of management.
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
 - [Screenshots](#screenshots)
 - [Settings](#settings)
 - [Getting Started](#getting-started)
@@ -14,17 +21,10 @@
   - [Running Perimeter](#running-perimeter)
 - [Configuring UniFi Network Controller](#configuring-unifi-network-controller)
 - [UniFi Hostname Sync](#unifi-hostname-sync)
+    - [Creating the `UNIFI_TOKEN`](#creating-the-unifi_token)
 - [License](#license)
 
----
-
-## Description
-
-Perimeter is a self-hosted small-scale MAC filtering management server designed to facilitate access management on a local wireless network.
-
-Perimeter uses RADIUS to allow or block clients based on defined policies.
-
-Additionally, Perimeter can be integrated with a UniFi Network Controller to learn about hostnames of connected devices, enhancing visibility and ease of management.
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -46,25 +46,26 @@ Perimeter supports different enforcement modes for handling unknown and pending 
 
 ## Getting Started
 
-## Configuration
+### Configuration
 
 Perimeter is configured using environment variables:
 
 | Environment Variable   | Required?                        | Description                                                                         |
 | ---------------------- | -------------------------------- | ----------------------------------------------------------------------------------- |
 | `RADIUS_PASSWORD`      | Yes                              | Password used for RADIUS authentication                                             |
-| `PERIMETER_SECRET_KEY` | In public facing deployment      | Django [Secret Key](https://docs.djangoproject.com/en/5.1/ref/settings/#secret-key) |
 | `UNIFI_BASE`           | For syncing hostnames with UniFi | Base URL of the UniFi API (see [UniFi Host Sync](#unifi-host-sync))                 |
 | `UNIFI_TOKEN`          | For syncing hostnames with UniFi | UniFi API key for syncing hostname data. (see [UniFi Host Sync](#unifi-host-sync))  |
+| `PERIMETER_SECRET_KEY` | In public facing deployment      | Django [Secret Key](https://docs.djangoproject.com/en/5.1/ref/settings/#secret-key) |
 | `DEBUG`                | No                               | If set to `true`, increases the log level for debugging.                            |
 
 ---
 
 ### Running Perimeter
 
-To start Perimeter using Docker, use the following command:
+To start Perimeter using Docker, use the following commands:
 
 ```sh
+mkdir data
 docker run \
   --name=perimeter \
   -p 1812:1812/udp \
@@ -76,6 +77,8 @@ docker run \
   -e UNIFI_TOKEN=$UNIFI_TOKEN \
   ghcr.io/ebirger/perimeter:latest
 ```
+
+Browse to `http://<YOUR IP>:8001`.
 
 ---
 
@@ -126,7 +129,7 @@ Perimeter can be configured to poll the UniFi Network Controller to retrieve hos
 If enabled by setting the needed environment variables, Perimeter will periodically request device information from the UniFi API
 and use it to enhance visibility into connected clients.
 
-#### Creating the `UNIFI_TOKEN`:
+#### Creating the `UNIFI_TOKEN`
 - Go to **Control Panel**
 - Select **Integrations**
 - Follow the **Getting Started** Guide
