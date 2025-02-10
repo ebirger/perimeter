@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import { StopOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Space, Table, Button, Spin } from 'antd';
+import ouiData from "oui-data" with {type: "json"};
 import { csrftoken } from './utils.js';
 
 const API_URL = "/api/devices";
@@ -17,6 +18,13 @@ const DATE_FORMAT_OPTIONS = {
 };
 
 const dateFormat = new Intl.DateTimeFormat('en-US', DATE_FORMAT_OPTIONS);
+
+const getHardwareByMac = (mac) => {
+  const oui = mac.replace(/[^0-9a-f]/gi,"").toUpperCase().substring(0,6);
+  const vendor = ouiData[oui];
+  console.log(`${mac} ${oui} ${vendor}`);
+  return vendor?.split('\n')[0];
+}
 
 export default function DeviceManagement(props) {
   const [devices, setDevices] = useState([]);
@@ -114,6 +122,13 @@ export default function DeviceManagement(props) {
       dataIndex: 'mac',
       key: 'mac',
       ...getFilters('mac'),
+    },
+    {
+      title: 'Hardware',
+      dataIndex: 'mac',
+      key: 'mac',
+      responsive: ['md'],
+      render: (_, record) => getHardwareByMac(record.mac),
     },
     {
       title: 'IP Address',
