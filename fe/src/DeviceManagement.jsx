@@ -22,7 +22,6 @@ const dateFormat = new Intl.DateTimeFormat('en-US', DATE_FORMAT_OPTIONS);
 const getHardwareByMac = (mac) => {
   const oui = mac.replace(/[^0-9a-f]/gi,"").toUpperCase().substring(0,6);
   const vendor = ouiData[oui];
-  console.log(`${mac} ${oui} ${vendor}`);
   return vendor?.split('\n')[0];
 }
 
