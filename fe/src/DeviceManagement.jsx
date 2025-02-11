@@ -96,6 +96,7 @@ export default function DeviceManagement(props) {
         id: device.id,
         name: device.hostname,
         mac: device.mac_address,
+        hw: getHardwareByMac(device.mac_address),
         ip: device.ip_address,
         last_seen: device.last_seen,
       }
@@ -125,10 +126,10 @@ export default function DeviceManagement(props) {
     },
     {
       title: 'Hardware',
-      dataIndex: 'mac',
-      key: 'mac',
+      dataIndex: 'hw',
+      key: 'hw',
       responsive: ['md'],
-      render: (_, record) => getHardwareByMac(record.mac),
+      ...getFilters('hw'),
     },
     {
       title: 'IP Address',
