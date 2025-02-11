@@ -104,8 +104,9 @@ export default function DeviceManagement(props) {
   const getFilters = (c) => {
       return {
         filterSearch: true,
-        onFilter: (value, record) => record[c].startsWith(value),
-        filters: dataSource.map((d) => { return { text: d[c], value: d[c] }; }),
+        onFilter: (value, record) => record[c] && record[c].startsWith(value),
+        filters: ([...new Set(dataSource.map(d => d[c]))])
+          .sort().filter(v => v).map((v) => ({ text: v, value: v }))
       };
   };
 
