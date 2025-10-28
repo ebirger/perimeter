@@ -1,4 +1,4 @@
-FROM node:23 AS frontend
+FROM node:24 AS frontend
 
 WORKDIR /fe
 COPY fe/package.json ./
